@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surplus Food Rescue</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f2;
+            color: #243328;
+        }
+
+        header {
+            background: #236b45;
+            color: white;
+            padding: 24px 8%;
+        }
+
+        header h1 { margin: 0 0 8px; }
+        header p { margin: 0; }
+
+        main {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .button {
+            display: inline-block;
+            background: #236b45;
+            color: white;
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 7px;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px #0000000d;
+        }
+
+        .card h3 { margin-top: 0; }
+        .muted { color: #607064; }
+        .status { color: #236b45; font-weight: bold; }
+        .message { padding: 12px; border-radius: 7px; margin-bottom: 15px; }
+        .success { background: #dff5e5; }
+        .error { background: #ffe4e4; }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #607064;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Surplus Food Rescue</h1>
+    <p>Connecting surplus food with communities that need it.</p>
+</header>
+
+<main>
+    <div class="topbar">
+        <div>
+            <h2>Available Food Donations</h2>
+            <p class="muted">Browse food listed for collection.</p>
+        </div>
+
+        <a class="button" th:href="@{/donations/new}">
+            + List a Donation
+        </a>
+    </div>
+
+    <div th:if="${successMessage}"
+         class="message success"
+         th:text="${successMessage}"></div>
+
+    <div th:if="${errorMessage}"
+         class="message error"
+         th:text="${errorMessage}"></div>
+
+    <div class="grid">
+        <article class="card" th:each="donation : ${donations}">
+            <h3 th:text="${donation.foodName}">Vegetable Meals</h3>
+
+            <p th:text="${donation.description}">Freshly prepared meals</p>
+
+            <p>
+                <strong>Quantity:</strong>
+                <span th:text="${donation.quantity}">20</span>
+                <span th:text="${donation.unit}">boxes</span>
+            </p>
+
+            <p>
+                <strong>Pickup:</strong>
+                <span th:text="${donation.pickupLocation}">Location</span>
+            </p>
+
+            <p>
+                <strong>Prepared:</strong>
+                <span th:text="${#temporals.format(
+                    donation.preparedAt, 'dd MMM yyyy, HH:mm')}">
+                    Preparation time
+                </span>
+            </p>
+
+            <p>
+                <strong>Collect by:</strong>
+                <span th:text="${#temporals.format(
+                    donation.collectionDeadline, 'dd MMM yyyy, HH:mm')}">
+                    Collection deadline
+                </span>
+            </p>
+
+            <p class="status" th:text="${donation.status}">AVAILABLE</p>
+        </article>
+    </div>
+
+    <p class="muted" th:if="${#lists.isEmpty(donations)}">
+        No donations are listed yet. Be the first to list surplus food.
+    </p>
+</main>
+
+<footer>
+    A community-focused project to reduce food waste.
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Donate Food | Surplus Food Rescue</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: #f5f8f5;
+            color: #18352b;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        header {
+            padding: 18px 5%;
+            background: white;
+            border-bottom: 1px solid #dce8df;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand { font-weight: 800; font-size: 19px; }
+        a { color: #176b4d; }
+
+        .wrap {
+            max-width: 900px;
+            margin: 34px auto;
+            padding: 0 18px;
+        }
+
+        .intro h1 { margin-bottom: 8px; }
+        .intro p, .muted { color: #60756b; }
+
+        .panel {
+            background: white;
+            border: 1px solid #dce8df;
+            border-radius: 16px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+
+        .panel h2 { margin-top: 0; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd9ce;
+            border-radius: 9px;
+            font: inherit;
+            background: white;
+        }
+
+        textarea {
+            min-height: 82px;
+            resize: vertical;
+        }
+
+        .field { margin-bottom: 14px; }
+
+        .btn {
+            border: 0;
+            border-radius: 9px;
+            background: #176b4d;
+            color: white;
+            padding: 12px 17px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .btn:disabled { opacity: .55; cursor: wait; }
+
+        .secondary { background: #52665c; }
+
+        .muted { font-size: 14px; }
+
+        .notice {
+            padding: 12px;
+            border-radius: 9px;
+            margin: 12px 0;
+            background: #eaf6ef;
+        }
+
+        .error { background: #fff0ee; color: #a02b20; }
+
+        .item {
+            padding: 15px;
+            border: 1px solid #dce8df;
+            border-radius: 12px;
+            margin: 10px 0;
+        }
+
+        .status {
+            display: inline-block;
+            background: #eaf6ef;
+            color: #176b4d;
+            border-radius: 20px;
+            padding: 5px 9px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 650px) {
+            .grid { grid-template-columns: 1fr; }
+            .panel { padding: 18px; }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="brand">🍃 Surplus Food Rescue · Donor</div>
+    <a href="/">← Home</a>
+</header>
+
+<main class="wrap">
+    <div class="intro">
+        <h1>Share surplus food</h1>
+        <p>
+            Tell us who is donating, then add food details.
+            When an organization reserves your donation, you'll see its message below.
+        </p>
+    </div>
+
+    <!-- DONOR REGISTRATION -->
+    <section class="panel" id="registerPanel">
+        <h2>1. Donor details</h2>
+
+        <form id="donorForm">
+            <div class="grid">
+                <div class="field">
+                    <label for="dname">Name / business name</label>
+                    <input id="dname" required maxlength="120"
+                           placeholder="e.g. Green Leaf Cafe">
+                </div>
+
+                <div class="field">
+                    <label for="demail">Contact email</label>
+                    <input id="demail" type="email" required maxlength="180"
+                           placeholder="you@example.com">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="daddress">Address</label>
+                <input id="daddress" required maxlength="255"
+                       placeholder="Full pickup address">
+            </div>
+
+            <button class="btn" id="registerBtn" type="submit">
+                Continue to donation form
+            </button>
+        </form>
+    </section>
+
+    <!-- DONATION FORM -->
+    <section class="panel hidden" id="foodPanel">
+        <h2>2. Donation details</h2>
+        <p class="muted" id="donorWelcome"></p>
+
+        <button class="btn secondary" type="button" id="switchDonorBtn">
+            Register a different donor
+        </button>
+
+        <form id="foodForm" style="margin-top: 18px;">
+            <div class="grid">
+                <div class="field">
+                    <label for="foodType">Food type</label>
+                    <select id="foodType" required>
+                        <option value="">Choose food type</option>
+                        <option value="VEG">VEG</option>
+                        <option value="NON_VEG">NON_VEG</option>
+                        <option value="DAIRY">DAIRY</option>
+                        <option value="BAKERY">BAKERY</option>
+                        <option value="FRUITS">FRUITS</option>
+                        <option value="GRAINS">GRAINS</option>
+                        <option value="PACKAGED">PACKAGED</option>
+                        <option value="OTHER">OTHER</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="quantity">Quantity (kg)</label>
+                    <input id="quantity" type="number"
+                           min="0.1" step="0.1" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="pickup">Pickup address</label>
+                <input id="pickup" required maxlength="500">
+            </div>
+
+            <div class="field">
+                <label for="deadline">Pickup deadline</label>
+                <input id="deadline" type="datetime-local" required>
+            </div>
+
+            <div class="field">
+                <label for="description">Food description / storage notes</label>
+                <textarea id="description" required maxlength="500"
+                          placeholder="Freshly prepared, packed portions, allergens, etc."></textarea>
+            </div>
+
+            <button class="btn" id="publishBtn" type="submit">
+                Publish donation
+            </button>
+        </form>
+    </section>
+
+    <!-- DONATION HISTORY -->
+    <section class="panel">
+        <h2>Your donations</h2>
+        <p class="muted">Donations are loaded from the server.</p>
+        <div id="myListings">
+            <p class="muted">Register as a donor to begin.</p>
+        </div>
+    </section>
+
+    <!-- ORGANIZATION NOTIFICATIONS -->
+    <section class="panel">
+        <h2>Messages from organizations</h2>
+        <div id="notifications">
+            <p class="muted">
+                Messages appear here when an organization reserves your food.
+            </p>
+        </div>
+    </section>
+
+    <div id="message" aria-live="polite"></div>
+</main>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+const STORAGE_KEY = "sfrDonor";
+let donor = null;
+
+function readSavedDonor() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+
+        if (saved && saved.id != null) {
+            return saved;
+        }
+    } catch (error) {
+        console.warn("Could not read saved donor profile.");
+    }
+
+    return null;
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+function showMessage(message, isError = false) {
+    $("message").innerHTML = "";
+
+    const notice = document.createElement("div");
+    notice.className = "notice" + (isError ? " error" : "");
+    notice.textContent = message;
+
+    $("message").appendChild(notice);
+}
+
+function showRegistration() {
+    $("registerPanel").classList.remove("hidden");
+    $("foodPanel").classList.add("hidden");
+
+    $("myListings").innerHTML =
+        '<p class="muted">Register a donor to view that donor’s donations.</p>';
+
+    $("notifications").innerHTML =
+        '<p class="muted">Register a donor to view that donor’s messages.</p>';
+
+    $("donorWelcome").textContent = "";
+}
+
+function showDonor() {
+    if (!donor || donor.id == null) {
+        showRegistration();
+        return;
+    }
+
+    $("registerPanel").classList.add("hidden");
+    $("foodPanel").classList.remove("hidden");
+
+    $("donorWelcome").textContent =
+        `Donor profile: ${donor.name} · ID ${donor.id}`;
+
+    $("pickup").value = donor.address || "";
+
+    loadMine();
+    loadNotifications();
+}
+
+async function apiRequest(url, options = {}) {
+    const response = await fetch(url, options);
+
+    const text = await response.text();
+    let data = {};
+
+    try {
+        data = text ? JSON.parse(text) : {};
+    } catch {
+        data = { message: text };
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            data.error || data.message ||
+            `Request failed with HTTP ${response.status}`
+        );
+    }
+
+    return data;
+}
+
+/* Register a new donor in the backend. */
+$("donorForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const button = $("registerBtn");
+    button.disabled = true;
+
+    const newDonor = {
+        name: $("dname").value.trim(),
+        email: $("demail").value.trim(),
+        address: $("daddress").value.trim()
+    };
+
+    try {
+        const data = await apiRequest("/api/donors", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newDonor)
+        });
+
+        if (data.id == null) {
+            throw new Error(
+                "The server response did not contain a donor ID. Check the donor API response."
+            );
+        }
+
+        donor = {
+            id: data.id,
+            name: newDonor.name,
+            email: newDonor.email,
+            address: newDonor.address
+        };
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(donor));
+
+        $("foodForm").reset();
+        showDonor();
+        showMessage("Donor registered successfully.");
+    } catch (error) {
+        showMessage(error.message || "Could not register donor.", true);
+    } finally {
+        button.disabled = false;
+    }
+});
+
+/*
+ * Switch the currently selected browser profile.
+ * This does not delete the donor or any donation from MySQL.
+ */
+$("switchDonorBtn").addEventListener("click", () => {
+    donor = null;
+    localStorage.removeItem(STORAGE_KEY);
+
+    $("donorForm").reset();
+    $("foodForm").reset();
+
+    $("message").innerHTML = "";
+    showRegistration();
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+/* Publish food for the currently selected donor. */
+$("foodForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (!donor || donor.id == null) {
+        showMessage("Please register or select a donor first.", true);
+        showRegistration();
+        return;
+    }
+
+    const button = $("publishBtn");
+    button.disabled = true;
+
+    try {
+        const deadlineValue = $("deadline").value;
+        const deadline = new Date(deadlineValue);
+
+        if (!deadlineValue || Number.isNaN(deadline.getTime()) ||
+            deadline <= new Date()) {
+            throw new Error("Choose a future pickup deadline.");
+        }
+
+        const quantity = Number($("quantity").value);
+
+        if (!Number.isFinite(quantity) || quantity <= 0) {
+            throw new Error("Enter a valid food quantity.");
+        }
+
+        const body = {
+            donorId: donor.id,
+            foodType: $("foodType").value,
+            quantityKg: quantity,
+            pickupAddress: $("pickup").value.trim(),
+            pickupDeadline: deadlineValue,
+            description: $("description").value.trim()
+        };
+
+        const result = await apiRequest("/api/listings", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+
+        showMessage(
+            `Donation${result.id != null ? " #" + result.id : ""} published successfully.`
+        );
+
+        $("foodForm").reset();
+        $("pickup").value = donor.address || "";
+
+        await loadMine();
+    } catch (error) {
+        showMessage(error.message || "Could not publish donation.", true);
+    } finally {
+        button.disabled = false;
+    }
+});
+
+/* Fetch donations and show only those belonging to this donor. */
+async function loadMine() {
+    if (!donor) return;
+
+    try {
+        const all = await apiRequest("/api/listings");
+
+        if (!Array.isArray(all)) {
+            throw new Error("Unexpected donations response.");
+        }
+
+        const mine = all.filter(
+            item => String(item.donorId) === String(donor.id)
+        );
+
+        if (mine.length === 0) {
+            $("myListings").innerHTML =
+                '<p class="muted">No donations published yet for this donor.</p>';
+            return;
+        }
+
+        $("myListings").innerHTML = mine.map(item => `
+            <div class="item">
+                <strong>
+                    #${escapeHTML(item.id)} ·
+                    ${escapeHTML(item.foodType)} ·
+                    ${escapeHTML(item.quantityKg)} kg
+                </strong>
+                <p>${escapeHTML(item.description)}</p>
+                <p>
+                    ${escapeHTML(item.pickupAddress || "")}
+                    · Pickup by
+                    ${escapeHTML(String(item.pickupDeadline || "").replace("T", " "))}
+                </p>
+                <span class="status">${escapeHTML(item.status)}</span>
+            </div>
+        `).join("");
+    } catch (error) {
+        $("myListings").innerHTML =
+            '<p class="muted">Could not load donations. Please try refreshing.</p>';
+    }
+}
+
+/* Fetch messages for the currently selected donor. */
+async function loadNotifications() {
+    if (!donor) return;
+
+    try {
+        const items = await apiRequest(
+            `/api/donors/${encodeURIComponent(donor.id)}/notifications`
+        );
+
+        if (!Array.isArray(items)) {
+            throw new Error("Unexpected notifications response.");
+        }
+
+        if (items.length === 0) {
+            $("notifications").innerHTML =
+                '<p class="muted">No organization has reserved your food yet.</p>';
+            return;
+        }
+
+        $("notifications").innerHTML = items.map(item => `
+            <div class="item">
+                <strong>
+                    ${escapeHTML(item.organizationName || "Organization")}
+                    reserved donation #${escapeHTML(item.listingId)}
+                </strong>
+                <p>${escapeHTML(item.message)}</p>
+                <p class="muted">
+                    Contact: ${escapeHTML(item.organizationEmail || "Not provided")}
+                    · ${escapeHTML(String(item.createdAt || "").replace("T", " "))}
+                </p>
+            </div>
+        `).join("");
+    } catch (error) {
+        $("notifications").innerHTML =
+            '<p class="muted">Could not load messages.</p>';
+    }
+}
+
+/* Restore the last selected donor on page refresh. */
+donor = readSavedDonor();
+
+if (donor) {
+    showDonor();
+} else {
+    showRegistration();
+}
+</script>
+</body>
+</html>

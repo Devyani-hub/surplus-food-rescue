@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Food Donation</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 25px 15px;
+            font-family: Arial, sans-serif;
+            background: #f4f7f2;
+            color: #243328;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 20px auto;
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px #00000010;
+        }
+
+        h1 { color: #236b45; }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 16px;
+            margin-bottom: 7px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5cc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        textarea { resize: vertical; }
+
+        button, .back {
+            display: inline-block;
+            margin-top: 22px;
+            padding: 12px 18px;
+            border-radius: 7px;
+            border: none;
+            font-size: 15px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button {
+            background: #236b45;
+            color: white;
+        }
+
+        .back {
+            color: #236b45;
+            background: #e7f1e9;
+            margin-left: 8px;
+        }
+
+        .hint { color: #607064; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>List Surplus Food</h1>
+    <p>Enter the details needed for a recipient to arrange collection.</p>
+
+    <form th:action="@{/donations}"
+          th:object="${donation}"
+          method="post">
+
+        <label for="foodName">Food name *</label>
+        <input id="foodName" type="text" th:field="*{foodName}"
+               maxlength="150" required>
+
+        <label for="description">Description</label>
+        <textarea id="description" th:field="*{description}"
+                  rows="3" maxlength="2000"></textarea>
+
+        <label for="quantity">Quantity *</label>
+        <input id="quantity" type="number" th:field="*{quantity}"
+               min="1" required>
+
+        <label for="unit">Unit *</label>
+        <select id="unit" th:field="*{unit}" required>
+            <option value="">Choose a unit</option>
+            <option value="meal boxes">Meal boxes</option>
+            <option value="portions">Portions</option>
+            <option value="kg">Kilograms</option>
+            <option value="packets">Packets</option>
+        </select>
+
+        <label for="preparedAt">Preparation date and time *</label>
+        <input id="preparedAt" type="datetime-local"
+               th:field="*{preparedAt}" required>
+
+        <label for="pickupLocation">Pickup location *</label>
+        <input name="pickupAddress"
+       placeholder="Food pickup address, city and state"
+       required>
+
+        <label for="collectionDeadline">Collection deadline *</label>
+        <input id="collectionDeadline" type="datetime-local"
+               th:field="*{collectionDeadline}" required>
+
+        <p class="hint">
+            Only list food that can be safely distributed and stored.
+            A deadline alone does not establish food safety.
+        </p>
+
+        <button type="submit">Publish Donation</button>
+        <a class="back" th:href="@{/donations}">Cancel</a>
+    </form>
+</div>
+
+</body>
+</html>
